@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        setTimeout(function () {
+            window.location.href = '/chat';
+        }, 3000);
+    </script>
+    <style>
+        .loading-gif {
+            width: 100px;
+            height: auto;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .alert-info {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container text-center mt-5">
+    <div class="alert alert-info" role="alert">
+        <h1>Welcome to the Homepage!</h1>
+        <p>You will be redirected to the chat page shortly...</p>
+    </div>
+
+    <div>
+        <p class="text-muted">Please wait while we redirect you...</p>
+    </div>
+
+    <div>
+        <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." class="loading-gif"/>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
