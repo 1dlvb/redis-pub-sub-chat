@@ -1,0 +1,28 @@
+.chat-box {
+    height: 300px;
+    overflow-y: scroll;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 75%;
+    word-wrap: break-word;
+}
+
+.chat-message.received {
+    background-color: #e2f7e1;
+    text-align: left;
+    align-self: flex-start;
+}
+
+.chat-message.sent {
+    background-color: #d9edf7;
+    text-align: right;
+    align-self: flex-end;
+}
