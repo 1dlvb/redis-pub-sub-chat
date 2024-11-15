@@ -2,13 +2,16 @@ package com.dlvb.redischat.redis;
 
 import io.lettuce.core.RedisClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 public class Publisher {
 
-    private final RedisClient client = RedisClient.create("redis://localhost:6379");
+    @Value("${redis.uri}")
+    private String uri;
+    private final RedisClient client = RedisClient.create(uri);
 
 
     public void publish(String channel, String message){
