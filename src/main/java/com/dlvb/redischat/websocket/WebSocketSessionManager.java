@@ -27,6 +27,6 @@ public class WebSocketSessionManager {
     }
 
     public WebSocketSession getWebSocketSessions(String userId){
-        return this.webSocketSessionByUserId.get(userId);
+        return webSocketSessionByUserId.get(userId);
     }
 }
