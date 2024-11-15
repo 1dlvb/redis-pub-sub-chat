@@ -10,13 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class Subscriber {
 
-    @Value("${redis.uri}")
-    private String uri;
     private final RedisPubSubCommands<String, String> sync;
 
-    public Subscriber(WebSocketSessionManager webSocketSessionManager){
-        RedisClient client = RedisClient.create(uri);
-        StatefulRedisPubSubConnection<String, String> connection = client.connectPubSub();
+    public Subscriber(@Value("${redis.uri}") String uri, WebSocketSessionManager webSocketSessionManager){
+        StatefulRedisPubSubConnection<String, String> connection = RedisClient.create(uri).connectPubSub();
         var redisListener = new SubscriberHelper(webSocketSessionManager);
         connection.addListener(redisListener);
         this.sync = connection.sync();
