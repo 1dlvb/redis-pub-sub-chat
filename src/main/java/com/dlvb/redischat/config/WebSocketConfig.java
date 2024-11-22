@@ -33,10 +33,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @NonNull
     private Subscriber redisSubscriber;
 
+    @NonNull
+    private WebSocketTextHandler webSocketTextHandler;
+
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketTextHandler(this.webSocketSessionManager,
-                        this.redisPublisher,
-                        this.redisSubscriber), "/chat/*").
+        registry.addHandler(webSocketTextHandler, "/chat/*").
                 addInterceptors(getParametersInterceptors()).
                 setAllowedOriginPatterns("*");
     }
