@@ -12,6 +12,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -72,39 +73,32 @@ public class WebSocketTextHandler extends TextWebSocketHandler {
         redisTemplate.opsForList().trim(redisKey, 0, 19);
     }
 
-
     private void sendCachedMessages(WebSocketSession session, String userId) {
+
         String redisKey = "chat:history:" + userId;
 
         List<String> messages = redisTemplate.opsForList().range(redisKey, 0, -1);
 
         if (messages != null && !messages.isEmpty()) {
-            List<String> sortedMessages = messages.stream()
+            messages.stream()
                     .filter(msg -> msg.contains("|"))
-                    .sorted((m1, m2) -> {
+                    .sorted(Comparator.comparingLong(msg -> {
                         try {
-                            long timestamp1 = Long.parseLong(m1.split("\\|")[0]);
-                            long timestamp2 = Long.parseLong(m2.split("\\|")[0]);
-                            return Long.compare(timestamp1, timestamp2);
+                            return Long.parseLong(msg.split("\\|")[0]);
                         } catch (NumberFormatException e) {
-                            log.warn("Invalid message format: {}", m1, e);
-                            return 0;
+                            log.warn("Invalid message format: {}", msg, e);
+                            return Long.MIN_VALUE;
                         }
-                    })
-                    .map(m -> m.split("\\|", 2)[1])
-                    .toList();
-
-            for (String msg : sortedMessages) {
-                try {
-                    session.sendMessage(new TextMessage(msg));
-                } catch (Exception e) {
-                    log.error("Error sending cached message: {}", msg, e);
-                }
-            }
+                    }))
+                    .map(msg -> msg.split("\\|", 2)[1])
+                    .forEach(msg -> {
+                        try {
+                            session.sendMessage(new TextMessage(msg));
+                        } catch (Exception e) {
+                            log.error("Error sending cached message: {}", msg, e);
+                        }
+                    });
         }
     }
-
-
-
 
 }

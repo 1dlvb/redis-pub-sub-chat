@@ -12,18 +12,19 @@ public class Subscriber {
 
     private final RedisPubSubCommands<String, String> sync;
 
-    public Subscriber(@Value("${redis.uri}") String uri, WebSocketSessionManager webSocketSessionManager){
+    public Subscriber(@Value("${redis.uri}") String uri, WebSocketSessionManager webSocketSessionManager) {
         StatefulRedisPubSubConnection<String, String> connection = RedisClient.create(uri).connectPubSub();
-        var redisListener = new SubscriberHelper(webSocketSessionManager);
+        SubscriberHelper redisListener = new SubscriberHelper(webSocketSessionManager);
         connection.addListener(redisListener);
         this.sync = connection.sync();
     }
 
-    public void subscribe(String channel){
+    public void subscribe(String channel) {
         sync.subscribe(channel);
     }
 
-    public void  unsubscribe(String channel){
+    public void  unsubscribe(String channel) {
         sync.unsubscribe(channel);
     }
+
 }

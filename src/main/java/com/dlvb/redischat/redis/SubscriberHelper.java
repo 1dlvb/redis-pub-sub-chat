@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 
@@ -18,11 +19,10 @@ public class SubscriberHelper implements RedisPubSubListener<String, String> {
     @NonNull
     private WebSocketSessionManager webSocketSessionManager;
 
-
     @Override
     public void message(String channel, String message) {
-        log.info("Got the message on redis {} and {}", channel, message);
-        var ws = webSocketSessionManager.getWebSocketSessions(channel);
+        log.info("Got the message on redis {}: {}", channel, message);
+        WebSocketSession ws = webSocketSessionManager.getWebSocketSessions(channel);
         try {
             ws.sendMessage(new TextMessage(message));
         } catch (IOException e) {
@@ -55,4 +55,5 @@ public class SubscriberHelper implements RedisPubSubListener<String, String> {
     public void punsubscribed(String s, long l) {
 
     }
+
 }

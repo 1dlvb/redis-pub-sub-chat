@@ -16,7 +16,7 @@ services:
     volumes:
       - chat_postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5435:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -29,7 +29,7 @@ services:
     environment:
       - REDIS_HOSTS=local:redis:6379
     ports:
-      - "8081:8081"
+      - "8082:8081"
     depends_on:
       - redis
 volumes:

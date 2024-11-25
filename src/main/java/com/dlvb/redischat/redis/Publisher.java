@@ -15,7 +15,8 @@ public class Publisher {
 
     public void publish(String channel, String message) {
         StatefulRedisConnection<String, String> connection = RedisClient.create(uri).connect();
-        log.info("Going to publish the message to channel {} and message = {}", channel, message);
-        connection.sync().publish(channel,message);
+        log.info("Publishing the message to channel {}: {}", channel, message);
+        connection.sync().publish(channel, message);
     }
+
 }

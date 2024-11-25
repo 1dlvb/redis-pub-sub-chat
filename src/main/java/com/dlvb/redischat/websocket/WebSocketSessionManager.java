@@ -10,23 +10,25 @@ import java.util.Map;
 @Slf4j
 @Component
 public class WebSocketSessionManager {
+
     private final Map<String, WebSocketSession> webSocketSessionByUserId = new HashMap<>();
 
-    public void addWebSocketSession(WebSocketSession webSocketSession){
+    public void addWebSocketSession(WebSocketSession webSocketSession) {
         String userId = WebSocketHelper.getUserIdFromSessionAttribute(webSocketSession);
         log.info("Got request to add session id {} for user id {} ", webSocketSession.getId(), userId);
-        webSocketSessionByUserId.put(userId,webSocketSession);
+        webSocketSessionByUserId.put(userId, webSocketSession);
         log.info("Added session id {} for user id {}", webSocketSession.getId(), userId);
     }
 
-    public void removeWebSocketSession(WebSocketSession webSocketSession){
+    public void removeWebSocketSession(WebSocketSession webSocketSession) {
         String userId = WebSocketHelper.getUserIdFromSessionAttribute(webSocketSession);
         log.info("Got request to remove session id {} for user id {}", webSocketSession.getId(), userId);
         webSocketSessionByUserId.remove(userId);
         log.info("Removed session id {} for user id {}", webSocketSession.getId(), userId);
     }
 
-    public WebSocketSession getWebSocketSessions(String userId){
+    public WebSocketSession getWebSocketSessions(String userId) {
         return webSocketSessionByUserId.get(userId);
     }
+
 }
