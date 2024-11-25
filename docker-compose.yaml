@@ -10,19 +10,6 @@ services:
       - redis-data:/data
     restart: unless-stopped
 
-  chat_postgres:
-    image: postgres:16
-    container_name: chat_postgres
-    volumes:
-      - chat_postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5435:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=chat
-    restart: always
-
   redis-commander:
     image: rediscommander/redis-commander:latest
     container_name: redis-commander
