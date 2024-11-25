@@ -11,6 +11,11 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 
+/**
+ * SubscriberHelper listens for messages from Redis Pub/Sub channels and forwards the messages
+ * to the corresponding WebSocket sessions.
+ * @author Matushkin Anton
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -19,6 +24,12 @@ public class SubscriberHelper implements RedisPubSubListener<String, String> {
     @NonNull
     private WebSocketSessionManager webSocketSessionManager;
 
+    /**
+     * This method is called when a message is received from a Redis Pub/Sub channel.
+     *
+     * @param channel The Redis channel where the message was received from.
+     * @param message The message received from the Redis channel.
+     */
     @Override
     public void message(String channel, String message) {
         log.info("Got the message on redis {}: {}", channel, message);

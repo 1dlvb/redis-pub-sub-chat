@@ -15,6 +15,13 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.util.Comparator;
 import java.util.List;
 
+
+/**
+ * WebSocketTextHandler handles WebSocket communication for chat messages.
+ * It is responsible for managing user connections, caching chat messages,
+ * and publishing and subscribing to Redis channels for message delivery.
+ * @author Matushkin Anton
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -32,6 +39,13 @@ public class WebSocketTextHandler extends TextWebSocketHandler {
     @NonNull
     private StringRedisTemplate redisTemplate;
 
+    /**
+     * Invoked when a WebSocket connection is established.
+     * It adds the WebSocket session, subscribes the user to their channel,
+     * and sends any cached messages to the user.
+     *
+     * @param session The WebSocket session.
+     */
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         webSocketSessionManager.addWebSocketSession(session);
@@ -41,6 +55,13 @@ public class WebSocketTextHandler extends TextWebSocketHandler {
         sendCachedMessages(session, userId);
     }
 
+    /**
+     * Invoked when a WebSocket connection is closed.
+     * It removes the WebSocket session and unsubscribes the user from their channel.
+     *
+     * @param session The WebSocket session.
+     * @param status The status of the connection closure.
+     */
     @Override
     public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         webSocketSessionManager.removeWebSocketSession(session);
@@ -48,6 +69,15 @@ public class WebSocketTextHandler extends TextWebSocketHandler {
         redisSubscriber.unsubscribe(userId);
     }
 
+    /**
+     * Handles incoming text messages.
+     * The message format is expected to be "targetUserId -> message".
+     * The message is cached for both the sender and the target user,
+     * and published to the target user's Redis channel.
+     *
+     * @param session The WebSocket session.
+     * @param message The incoming message.
+     */
     @Override
     public void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) {
         String[] payload = message.getPayload().split("->");
@@ -63,6 +93,12 @@ public class WebSocketTextHandler extends TextWebSocketHandler {
         redisPublisher.publish(targetUserId, String.format("%s: %s", userId, messageToBeSent));
     }
 
+    /**
+     * Caches a message for a user in Redis.
+     *
+     * @param userId The user ID associated with the message.
+     * @param message The message to be cached.
+     */
     private void cacheMessage(String userId, String message) {
         String redisKey = "chat:history:" + userId;
 
@@ -73,6 +109,13 @@ public class WebSocketTextHandler extends TextWebSocketHandler {
         redisTemplate.opsForList().trim(redisKey, 0, 19);
     }
 
+    /**
+     * Sends cached messages to the user when they first connect.
+     * It retrieves the last 20 messages from Redis and sends them in order.
+     *
+     * @param session The WebSocket session of the user.
+     * @param userId The user ID associated with the messages.
+     */
     private void sendCachedMessages(WebSocketSession session, String userId) {
 
         String redisKey = "chat:history:" + userId;
