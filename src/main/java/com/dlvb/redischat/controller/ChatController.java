@@ -10,11 +10,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ChatController {
 
+    /**
+     * @return homepage template name.
+     */
     @GetMapping
     public String homePage() {
         return "index";
     }
 
+    /**
+     * @return chat page template name.
+     */
     @GetMapping("/chat")
     public String chatPage() {
         return "chat";
