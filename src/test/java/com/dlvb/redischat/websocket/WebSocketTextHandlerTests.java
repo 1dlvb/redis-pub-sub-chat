@@ -14,7 +14,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +56,7 @@ class WebSocketTextHandlerTests {
     }
 
     @Test
-    void testAfterConnectionEstablished() {
+    void testAfterConnectionEstablishedSendsCachedMessages() {
         String userId = "user123";
 
         when(session.getAttributes()).thenReturn(Map.of("userId", userId));
@@ -70,7 +70,7 @@ class WebSocketTextHandlerTests {
     }
 
     @Test
-    void testHandleTextMessage() {
+    void testHandleTextMessageHandlesIncomingTextMessages() {
         String userId = "user123";
         String targetUserId = "user321";
         String messageToBeSent = "test";
@@ -103,14 +103,18 @@ class WebSocketTextHandlerTests {
 
 
     @Test
-    void testSendCachedMessages() throws IOException {
+    void testSendCachedMessagesActuallySendsCachedMessages() throws Exception {
         String userId = "user123";
         String redisKey = "chat:history:" + userId;
-
         List<String> mockMessages = List.of("1|user123: test1", "2|user123: test2");
+
         when(redisTemplate.opsForList().range(redisKey, 0, -1)).thenReturn(mockMessages);
 
-        webSocketTextHandler.sendCachedMessages(session, userId);
+        Method sendCachedMessagesMethod = WebSocketTextHandler.class.getDeclaredMethod("sendCachedMessages",
+                WebSocketSession.class, String.class);
+        sendCachedMessagesMethod.setAccessible(true);
+
+        sendCachedMessagesMethod.invoke(webSocketTextHandler, session, userId);
 
         verify(session, times(2)).sendMessage(any(TextMessage.class));
 
