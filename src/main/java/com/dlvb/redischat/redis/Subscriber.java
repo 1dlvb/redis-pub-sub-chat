@@ -23,7 +23,7 @@ public class Subscriber {
         sync.subscribe(channel);
     }
 
-    public void  unsubscribe(String channel) {
+    public void unsubscribe(String channel) {
         sync.unsubscribe(channel);
     }
 
